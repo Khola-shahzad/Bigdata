@@ -1,0 +1,38 @@
+services:
+  elasticsearch:
+    image: "elasticsearch:${ELASTIC_VERSION}"
+    container_name: lab_elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "${ELASTIC_PORT}:9200"
+    networks:
+      - labnet
+
+  mongo:
+    image: "mongo:${MONGO_VERSION}"
+    container_name: lab_mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    ports:
+      - "${MONGO_PORT}:27017"
+    networks:
+      - labnet
+
+  postgres:
+    image: "postgres:${POSTGRES_VERSION}"
+    container_name: lab_postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    networks:
+      - labnet
+
+networks:
+  labnet:
+    driver: bridge
