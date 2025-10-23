@@ -14,7 +14,7 @@ HDFS_URL = f"http://{HDFS_HOST}:{HDFS_PORT}/webhdfs/v1"
 
 
 def create_item(item):
-    print(f"📤 Creating item: {item}")
+    print(f"Creating item: {item}")
     items = read_items(return_data=True)
     items.append(item)
     data = "\n".join(items)
@@ -24,9 +24,9 @@ def create_item(item):
     if "Location" in r.headers:
         redirect_url = r.headers["Location"]
         requests.put(redirect_url, data=data.encode())
-        print("✅ Item created successfully!")
+        print("Item created successfully!")
     else:
-        print("❌ Create failed:", r.text)
+        print("Create failed:", r.text)
 
 
 def read_items(return_data=False):
@@ -39,18 +39,18 @@ def read_items(return_data=False):
             if return_data:
                 return items
             if not items:
-                print("📂 No items found.")
+                print("No items found.")
             else:
-                print("📋 All items:")
+                print("All items:")
                 for i, item in enumerate(items, 1):
                     print(f"{i}. {item}")
             return items
         else:
             if not return_data:
-                print("📂 No file found (empty list).")
+                print("No file found (empty list).")
             return []
     except Exception as e:
-        print("⚠️ Read failed:", e)
+        print(" Read failed:", e)
         return []
 
 
@@ -64,11 +64,11 @@ def update_item(index, new_value):
         if "Location" in r.headers:
             redirect_url = r.headers["Location"]
             requests.put(redirect_url, data=data.encode())
-            print("✏️ Item updated successfully!")
+            print("Item updated successfully!")
         else:
-            print("❌ Update failed:", r.text)
+            print("Update failed:", r.text)
     else:
-        print("❌ Invalid index.")
+        print("Invalid index.")
 
 
 def delete_item(index):
@@ -114,10 +114,10 @@ def main():
             index = int(input("Enter item number to delete: ")) - 1
             delete_item(index)
         elif choice == "5":
-            print("👋 Exiting...")
+            print("Exiting...")
             break
         else:
-            print("❌ Invalid choice.")
+            print("Invalid choice.")
 
 
 if __name__ == "__main__":
