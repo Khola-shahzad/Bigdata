@@ -81,11 +81,11 @@ def delete_item(index):
         if "Location" in r.headers:
             redirect_url = r.headers["Location"]
             requests.put(redirect_url, data=data.encode())
-            print(f"🗑️ Deleted item: {deleted}")
+            print(f"Deleted item: {deleted}")
         else:
-            print("❌ Delete failed:", r.text)
+            print("Delete failed:", r.text)
     else:
-        print("❌ Invalid index.")
+        print("Invalid index.")
 
 
 def main():
