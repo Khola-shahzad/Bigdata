@@ -12,3 +12,4 @@ df.to_parquet("sample_data.parquet", engine="pyarrow", index=False)
 
 print("Parquet file created successfully: sample_data.parquet")
 print(df)
+

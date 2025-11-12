@@ -9,3 +9,10 @@ COPY . /app
 RUN pip install hdfs python-dotenv
 
 CMD ["python", "main.py"]
+
+
+
+
+
+
+#docker exec -it hdfs_crud_app bash

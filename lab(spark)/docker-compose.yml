@@ -1,0 +1,80 @@
+services:
+  hdfs-nn:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    container_name: hdfs-nn
+    ports:
+      - "9870:9870"
+      - "9000:9000"
+    environment:
+      - CLUSTER_NAME=my-hadoop-cluster
+    volumes:
+      - hdfs-nn-data:/hadoop/dfs/name
+    networks:
+      - bigdata-net
+
+  hdfs-dn:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: hdfs-dn
+    ports:
+      - "9864:9864"
+    environment:
+      - SERVICE_PRECONDITION=hdfs-nn:9870
+    volumes:
+      - hdfs-dn-data:/hadoop/dfs/data
+    networks:
+      - bigdata-net
+
+  spark-master:
+    image: bde2020/spark-master:3.2.1-hadoop3.2
+    container_name: spark-master
+    environment:
+      - SPARK_MODE=master
+      - SPARK_MASTER_HOST=spark-master
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+    networks:
+      - bigdata-net
+    depends_on:
+      - hdfs-nn
+
+  spark-worker:
+    image: bde2020/spark-worker:3.2.1-hadoop3.2
+    container_name: spark-worker
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER=spark://spark-master:7077
+      - SPARK_WORKER_MEMORY=2G
+      - SPARK_WORKER_CORES=2
+    ports:
+      - "8081:8081"
+    networks:
+      - bigdata-net
+    depends_on:
+      - spark-master
+
+  spark-app:
+    image: bde2020/spark-submit:3.2.1-hadoop3.2
+    container_name: spark-app
+    command: >
+      spark-submit
+      --master spark://spark-master:7077
+      --deploy-mode client
+      /opt/spark-app/app.py
+    volumes:
+      - ./app.py:/opt/spark-app/app.py
+    networks:
+      - bigdata-net
+    depends_on:
+      - spark-master
+      - spark-worker
+      - hdfs-nn
+      - hdfs-dn
+
+networks:
+  bigdata-net:
+    driver: bridge
+
+volumes:
+  hdfs-nn-data:
+  hdfs-dn-data:
